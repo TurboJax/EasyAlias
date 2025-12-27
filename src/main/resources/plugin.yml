@@ -1,0 +1,4 @@
+name: EasyAlias
+version: '1.0.0'
+main: org.turbojax.EasyAlias
+api-version: '1.21.11'
