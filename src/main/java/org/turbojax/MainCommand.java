@@ -1,6 +1,8 @@
 package org.turbojax;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.bukkit.command.CommandSender;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -137,20 +139,27 @@ public class MainCommand implements BasicCommand {
         }
     }
     
-
     @Override
     public Collection<String> suggest(CommandSourceStack commandSourceStack, String[] args) {
-        return BasicCommand.super.suggest(commandSourceStack, args);
+        if (args.length != 1) return List.of();
+        
+        List<String> suggestions = new ArrayList<>();
+        if (commandSourceStack.getSender().hasPermission("easyalias.get")) suggestions.add("get");
+        if (commandSourceStack.getSender().hasPermission("easyalias.help")) suggestions.add("help");
+        if (commandSourceStack.getSender().hasPermission("easyalias.list")) suggestions.add("list");
+        if (commandSourceStack.getSender().hasPermission("easyalias.reload")) suggestions.add("reload");
+        if (commandSourceStack.getSender().hasPermission("easyalias.set")) suggestions.add("set");
+        return List.of();
     }
 
     public void sendHelp(CommandSender sender) {
         // Building the body of the help message based on the permissions the sender has.
         Component base = Component.empty();
-        if (sender.hasPermission("easyalias.reload")) base.append(toComponent("<#FFA500>/easyalias reload<white>: Reloads the config.\n"));
-        if (sender.hasPermission("easyalias.help")) base.append(toComponent("<#FFA500>/easyalias help<white>: Prints this help message.\n"));
         if (sender.hasPermission("easyalias.get")) base.append(toComponent("<#FFA500>/easyalias get <alias><white>: Gets the command that the alias executes.\n"));
-        if (sender.hasPermission("easyalias.set")) base.append(toComponent("<#FFA500>/easyalias set <alias> <command><white>: Creates or overwrites an alias to the passed command.  Can contain spaces.\n"));
+        if (sender.hasPermission("easyalias.help")) base.append(toComponent("<#FFA500>/easyalias help<white>: Prints this help message.\n"));
         if (sender.hasPermission("easyalias.list")) base.append(toComponent("<#FFA500>/easyalias list<white>: Lists all of the aliases available to the player and the command they run.\n"));
+        if (sender.hasPermission("easyalias.reload")) base.append(toComponent("<#FFA500>/easyalias reload<white>: Reloads the config.\n"));
+        if (sender.hasPermission("easyalias.set")) base.append(toComponent("<#FFA500>/easyalias set <alias> <command><white>: Creates or overwrites an alias to the passed command.  Can contain spaces.\n"));
 
         // If the user does not have the ability to see any command, send an error.
         if (base.equals(Component.empty())) {
