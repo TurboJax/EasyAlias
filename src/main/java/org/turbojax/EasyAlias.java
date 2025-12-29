@@ -59,6 +59,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     }
 
     public void registerCommand(String alias) {
+        removeCommand(alias);
         getServer().getCommandMap().register("easyalias", new Command(alias) {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
@@ -69,6 +70,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     }
 
     public void registerCommand(String alias, String command) {
+        removeCommand(alias);
         getServer().getCommandMap().register("easyalias", new Command(alias) {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
