@@ -3,3 +3,8 @@
 .vscode/
 bin/
 build/
+
+!run/eula.txt
+!run/plugins
+run/
+run/plugins/.paper-remapped
