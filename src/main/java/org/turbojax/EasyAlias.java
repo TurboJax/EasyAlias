@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.google.gson.Gson;
@@ -15,6 +16,8 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     private final HttpRequest request;
     private final HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
     private final String GITLAB_TOKEN = "glpat-utSA04EDb8SnhthMS5nakW86MQp1OjcH.01.0w17ewqmt";
+
+    private final MainConfig config = new MainConfig(this);
 
     public EasyAlias() {
         try {
@@ -31,11 +34,20 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        config.load();
+
+        // Registering aliases
+        registerCommands();
+    }
+
+    public void registerCommands() {
+        config.getCommands().forEach((alias, command) -> registerCommand(alias, (ctx, args) -> Bukkit.dispatchCommand(ctx.getSender(), command)));
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        config.save();
     }
 
     public boolean hasUpdate() {
