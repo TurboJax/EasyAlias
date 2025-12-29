@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -132,8 +135,33 @@ public class MainConfig {
      * 
      * @return The safe radius of the player.
      */
-    public int getPlayerSafeRadius() {
-        return config.getInt("player-safe-radius", 24);
+    public Map<String,String> getCommands() {
+        Map<String,String> commands = new HashMap<>();
+
+        Set<String> aliases = config.getConfigurationSection("commands").getKeys(false);
+        aliases.forEach(alias -> commands.put(alias, config.getString("commands." + alias)));
+
+        return commands;
+    }
+
+    public String getCommand(String alias) {
+        return getCommands().get(alias);
+    }
+
+    public void setCommand(String alias, String command) {
+        Map<String,String> commands = getCommands();
+        if (command == null) {
+            commands.remove(alias);
+        } else {
+            commands.put(alias, command);
+        }
+        
+        setCommands(commands);
+    }
+
+    public void setCommands(Map<String,String> commands) {
+        config.set("commands", commands);
+        save();
     }
 
     /**
