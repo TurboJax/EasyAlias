@@ -151,12 +151,7 @@ public class MainConfig {
 
     public void setCommand(@NotNull String alias, @NotNull String command) {
         Map<String,String> commands = getCommands();
-        if (command == null) {
-            commands.remove(alias);
-        } else {
-            commands.put(alias, command);
-        }
-        
+        commands.put(alias, command);
         setCommands(commands);
     }
 
@@ -167,18 +162,10 @@ public class MainConfig {
     }
 
     public void setCommands(Map<String,String> commands) {
-        config.set("commands", commands);
-        save();
-    }
-
-    /**
-     * Sets the "safe" radius of the player.
-     * 
-     * @param radius The new radius in blocks.
-     */
-    public void setPlayerSafeRadius(int radius) {
-        config.set("player-safe-radius", radius);
-
+        config.createSection("commands");
+        commands.forEach((alias, command) -> {
+            config.set("commands." + alias, command);
+        });
         save();
     }
 
