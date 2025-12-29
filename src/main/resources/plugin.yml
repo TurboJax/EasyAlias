@@ -2,3 +2,25 @@ name: EasyAlias
 version: '1.0.0'
 main: org.turbojax.EasyAlias
 api-version: '1.21.11'
+
+commands:
+  easyalias:
+    description: "The main command to control the plugin with"
+    usage: "/easyalias <arg> [alias] [command]"
+
+permissions:
+  easyalias.help:
+    description: "Allows players to use \"/easyalias help\""
+    default: true
+  easyalias.get:
+    description: "Allows players to use \"/easyalias get <alias>\""
+    default: op
+  easyalias.set:
+    description: "Allows players to use \"/easyalias set <alias> <command>\""
+    default: op
+  easyalias.list:
+    description: "Allows players to use \"/easyalias list\""
+    default: true
+  easyalias.reload:
+    description: "Allows players to use \"/easyalias reload\""
+    default: op
