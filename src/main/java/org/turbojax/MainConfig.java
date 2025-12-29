@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 public class MainConfig {
     public final EasyAlias plugin;
@@ -148,7 +149,7 @@ public class MainConfig {
         return getCommands().get(alias);
     }
 
-    public void setCommand(String alias, String command) {
+    public void setCommand(@NotNull String alias, @NotNull String command) {
         Map<String,String> commands = getCommands();
         if (command == null) {
             commands.remove(alias);
@@ -156,6 +157,12 @@ public class MainConfig {
             commands.put(alias, command);
         }
         
+        setCommands(commands);
+    }
+
+    public void removeCommand(@NotNull String alias) {
+        Map<String,String> commands = getCommands();
+        commands.remove(alias);
         setCommands(commands);
     }
 

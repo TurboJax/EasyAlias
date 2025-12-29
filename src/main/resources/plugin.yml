@@ -24,3 +24,6 @@ permissions:
   easyalias.reload:
     description: "Allows players to use \"/easyalias reload\""
     default: op
+  easyalias.remove:
+    description: "Allows players to use \"/easyalias remove <alias>\""
+    default: op

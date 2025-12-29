@@ -37,10 +37,13 @@ public class MainCommand implements BasicCommand {
          *  |- get
          *  |   \- <alias>: Gets the command that the <alias> runs.
          *  |
+         *  |- remove
+         *  |   \- <alias>: Removes an alias from the plugin.
+         *  |
          *  \- list: Lists all of the commands available to the player and what they do.
          */
 
-        switch(args[1].toLowerCase()) {
+        switch(args[0].toLowerCase()) {
             case "help":
                 sendHelp(sender);
                 return;
@@ -92,6 +95,10 @@ public class MainCommand implements BasicCommand {
 
                 // Setting the alias to the command
                 config.setCommand(alias, command);
+                
+                // Updating the command
+                plugin.registerCommand(alias, command);
+
                 sender.sendMessage(toComponent("Bound <gold>/" + alias + " <white>to <gold>/" + command));
                 return;
             case "get":
@@ -103,7 +110,7 @@ public class MainCommand implements BasicCommand {
 
                 // Getting the alias parameter
                 if (args.length < 2) {
-                    sender.sendMessage(toComponent("<red>Please specify an alias and command to add"));
+                    sender.sendMessage(toComponent("<red>Please specify an alias to read"));
                     return;
                 }
 
@@ -120,6 +127,27 @@ public class MainCommand implements BasicCommand {
                 // Sending the alias and it's respective command
                 sender.sendMessage(toComponent("<gold>/" + alias + " <white>executes <gold>\"/" + command + "\""));
                 return;
+            case "remove":
+                // Permissions check "easyalias.remove"
+                if (!sender.hasPermission("easyalias.remove")) {
+                    sender.sendMessage(toComponent("<red>You don't have permission to do that."));
+                    return;
+                }
+
+                // Getting the alias parameter
+                if (args.length < 2) {
+                    sender.sendMessage(toComponent("<red>Please specify an alias to remove"));
+                    return;
+                }
+
+                alias = args[1];
+
+                // Removing the command
+                config.removeCommand(alias);
+                plugin.removeCommand(alias);
+
+                sender.sendMessage(toComponent("Removed <gold>/" + alias));
+                return;
             case "list":
                 // Permissions check "easyalias.list"
                 if (!sender.hasPermission("easyalias.list")) {
@@ -128,9 +156,9 @@ public class MainCommand implements BasicCommand {
                 }
 
                 // Sending the aliases and their respective commands
-                sender.sendMessage(toComponent("<#FFA500>EasyAlias Registered Aliases:"));
+                sender.sendMessage(toComponent("<#FFA500>EasyAlias Aliases:"));
                 config.getCommands().forEach((a, c) -> {
-                    sender.sendMessage(toComponent("<gold>/" + a + ": <gold>/" + c));
+                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>/" + c));
                 });
                 return;
             default:
@@ -149,17 +177,18 @@ public class MainCommand implements BasicCommand {
         if (commandSourceStack.getSender().hasPermission("easyalias.list")) suggestions.add("list");
         if (commandSourceStack.getSender().hasPermission("easyalias.reload")) suggestions.add("reload");
         if (commandSourceStack.getSender().hasPermission("easyalias.set")) suggestions.add("set");
-        return List.of();
+
+        return suggestions.stream().filter(s -> s.startsWith(args[0])).toList();
     }
 
     public void sendHelp(CommandSender sender) {
         // Building the body of the help message based on the permissions the sender has.
         Component base = Component.empty();
-        if (sender.hasPermission("easyalias.get")) base.append(toComponent("<#FFA500>/easyalias get <alias><white>: Gets the command that the alias executes.\n"));
-        if (sender.hasPermission("easyalias.help")) base.append(toComponent("<#FFA500>/easyalias help<white>: Prints this help message.\n"));
-        if (sender.hasPermission("easyalias.list")) base.append(toComponent("<#FFA500>/easyalias list<white>: Lists all of the aliases available to the player and the command they run.\n"));
-        if (sender.hasPermission("easyalias.reload")) base.append(toComponent("<#FFA500>/easyalias reload<white>: Reloads the config.\n"));
-        if (sender.hasPermission("easyalias.set")) base.append(toComponent("<#FFA500>/easyalias set <alias> <command><white>: Creates or overwrites an alias to the passed command.  Can contain spaces.\n"));
+        if (sender.hasPermission("easyalias.get")) base = base.append(toComponent("<#FFA500>/easyalias get <alias><white>: Gets the command that the alias executes.\n"));
+        if (sender.hasPermission("easyalias.help")) base = base.append(toComponent("<#FFA500>/easyalias help<white>: Prints this help message.\n"));
+        if (sender.hasPermission("easyalias.list")) base = base.append(toComponent("<#FFA500>/easyalias list<white>: Lists all of the aliases available to the player and the command they run.\n"));
+        if (sender.hasPermission("easyalias.reload")) base = base.append(toComponent("<#FFA500>/easyalias reload<white>: Reloads the config.\n"));
+        if (sender.hasPermission("easyalias.set")) base = base.append(toComponent("<#FFA500>/easyalias set <alias> <command><white>: Creates or overwrites an alias to the passed command.  Can contain spaces.\n"));
 
         // If the user does not have the ability to see any command, send an error.
         if (base.equals(Component.empty())) {

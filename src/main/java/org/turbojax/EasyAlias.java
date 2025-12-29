@@ -7,8 +7,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
@@ -44,7 +47,39 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     }
 
     public void registerCommands() {
-        config.getCommands().forEach((alias, command) -> registerCommand(alias, (ctx, args) -> Bukkit.dispatchCommand(ctx.getSender(), command)));
+        config.getCommands().forEach((alias, command) -> {
+            getServer().getCommandMap().register("easyalias", new Command(alias) {
+                @Override
+                public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
+                    Bukkit.dispatchCommand(sender, command);
+                    return true;
+                }
+            });
+        });
+    }
+
+    public void registerCommand(String alias) {
+        getServer().getCommandMap().register("easyalias", new Command(alias) {
+            @Override
+            public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
+                Bukkit.dispatchCommand(sender, config.getCommand(alias));
+                return true;
+            }
+        });
+    }
+
+    public void registerCommand(String alias, String command) {
+        getServer().getCommandMap().register("easyalias", new Command(alias) {
+            @Override
+            public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
+                Bukkit.dispatchCommand(sender, command);
+                return true;
+            }
+        });
+    }
+
+    public void removeCommand(String alias) {
+        Bukkit.getServer().getCommandMap().getKnownCommands().remove(alias);
     }
 
     @Override
