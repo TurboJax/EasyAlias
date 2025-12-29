@@ -36,6 +36,9 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         // Plugin startup logic
         config.load();
 
+        // Registering the main command
+        registerCommand("easyalias", new MainCommand(this, config));
+
         // Registering aliases
         registerCommands();
     }
