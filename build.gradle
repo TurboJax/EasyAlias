@@ -27,11 +27,8 @@ tasks {
     }
 }
 
-tasks.register("resetAndRun") {
-    doLast {
-        delete "run/plugins/$rootProject.name/config.yml"
-        delete "run/plugins/$rootProject.name/messages.yml"
-    }
+task resetAndRun {
+    delete "run/plugins/$rootProject.name"
     finalizedBy(runServer)
 }
 
