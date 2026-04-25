@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Set;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -118,7 +118,7 @@ public class MainConfig {
     }
 
     public void addAlias(String alias, String command, boolean runAsConsole) {
-        setCommand(alias, command);
+        setCommands(alias, List.of(command));
         setRunAsConsole(alias, runAsConsole);
     }
 
@@ -127,12 +127,17 @@ public class MainConfig {
         save();
     }
 
-    public String getCommand(String alias) {
-        return config.getString("commands." + alias + ".command");
+    public List<String> getCommands(String alias) {
+        String key = "commands." + alias + ".commands";
+        if (config.isString(key)) {
+            return List.of(config.getString(key));
+        }
+
+        return config.getStringList(key);
     }
 
-    public void setCommand(String alias, String command) {
-        config.set("commands." + alias + ".command", command);
+    public void setCommands(String alias, List<String> commands) {
+        config.set("commands." + alias + ".commands", commands);
         save();
     }
 

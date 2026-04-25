@@ -140,7 +140,7 @@ public class MainCommand implements BasicCommand {
                     command = builder.substring(0, builder.length() - 1);
 
                     // Editing the config
-                    config.setCommand(alias, command);
+                    config.setCommands(alias, List.of(command));
                     sender.sendMessage(toComponent("Edited the command for <gold>/" + alias + "<white> to <yellow>" + command));
                     return;
                 }
@@ -180,7 +180,7 @@ public class MainCommand implements BasicCommand {
                 }
 
                 // Sending the alias and it's respective command
-                sender.sendMessage(toComponent("<gold>/" + alias + "<white>: <yellow>\"/" + config.getCommand(alias) + "\" <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
+                sender.sendMessage(toComponent("<gold>/" + alias + "<white>: <yellow>\"/" + config.getCommands(alias) + "\" <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
                 return;
             case "remove":
                 // Permissions check "easyalias.remove"
@@ -213,7 +213,7 @@ public class MainCommand implements BasicCommand {
                 // Sending the aliases and their respective commands
                 sender.sendMessage(toComponent("<#FFA500>EasyAlias Aliases:"));
                 config.getAliases().forEach(a -> {
-                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>\"/" + config.getCommand(a) + "\" <green>(" + (config.getRunAsConsole(a) ? "Console" : "Player") + ")"));
+                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>\"/" + config.getCommands(a) + "\" <green>(" + (config.getRunAsConsole(a) ? "Console" : "Player") + ")"));
                 });
                 return;
             default:

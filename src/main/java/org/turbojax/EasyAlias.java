@@ -1,5 +1,7 @@
 package org.turbojax;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,18 +9,21 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public final class EasyAlias extends JavaPlugin implements Listener {
     private final HttpRequest request;
@@ -69,17 +74,47 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         Command bukkitCommand = new Command(alias) {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
-                String command = config.getCommand(alias);
-                if (command.contains("<player>")) {
-                    if (!(sender instanceof Player)) {
-                        sender.sendMessage(Component.text("Only players can use this command", NamedTextColor.RED));
+                List<String> commands = config.getCommands(alias);
+                
+                for (String command : commands) {
+                    if (command.contains("<player>")) {
+                        if (!(sender instanceof Player)) {
+                            sender.sendMessage(Component.text("Only players can use this command", NamedTextColor.RED));
+                            return true;
+                        }
+
+                        command = command.replace("<player>", sender.getName());
+                    }
+
+                    try {
+                        Bukkit.dispatchCommand(config.getRunAsConsole(alias) ? Bukkit.getConsoleSender() : sender, command);
+                    } catch (CommandException e) {
+                        String msg = e.getCause().getLocalizedMessage();
+                        StringBuilder formatted = new StringBuilder();
+                        
+                        Matcher matcher = Pattern.compile("at position ([0-9]*):").matcher(msg);
+                        if (matcher.find()) {
+                            int cmdIndex = Integer.valueOf(matcher.group(1));
+
+                            formatted.append("<red>");
+                            formatted.append(msg.substring(0, matcher.start()));
+                            formatted.append("\n");
+                            formatted.append("<gray>");
+
+                            int hereIndex = msg.length() - 9;
+
+                            formatted.append(msg.substring(matcher.end(), hereIndex));
+                            formatted.append("<red><u>");
+                            formatted.append(command.substring(cmdIndex));
+                            formatted.append("</u><i>");
+                            formatted.append(msg.substring(hereIndex));
+                        }
+
+                        sender.sendMessage(MiniMessage.miniMessage().deserialize(formatted.toString()));
                         return true;
                     }
-                    
-                    command = command.replace("<player>", sender.getName());
                 }
-                
-                Bukkit.dispatchCommand(config.getRunAsConsole(alias) ? Bukkit.getConsoleSender() : sender, command);
+
                 return true;
             }
         };
