@@ -72,6 +72,12 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         Command bukkitCommand = new Command(alias) {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
+                String permission = config.getPermission(alias);
+                if (!permission.isEmpty() && !sender.hasPermission(permission)) {
+                    sender.sendMessage(Component.text("You don't have permission to do that!", NamedTextColor.RED));
+                    return true;
+                }
+
                 List<String> commands = config.getExecutedCommands(alias);
                 
                 for (String command : commands) {
