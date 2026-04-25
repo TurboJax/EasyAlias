@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -51,9 +49,6 @@ public class MainCommand implements BasicCommand {
                 if (config.load()) {
                     // Registering new commands
                     plugin.registerCommands();
-
-                    // Updating the client command maps
-                    Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
 
                     sender.sendMessage(toComponent("<green>Commands reloaded!"));
                 } else {
