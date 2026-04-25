@@ -84,7 +84,7 @@ public class MainCommand implements BasicCommand {
                 }
 
                 // Sending the alias and it's respective command
-                sender.sendMessage(toComponent("<gold>/" + alias + "<white>: <yellow>\"/" + config.getCommands(alias) + "\" <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
+                sender.sendMessage(toComponent("<gold>/" + alias + "<white>: <yellow>\"/" + config.getExecutedCommands(alias) + "\" <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
                 return;
             case "list":
                 // Permissions check "easyalias.list"
@@ -96,7 +96,7 @@ public class MainCommand implements BasicCommand {
                 // Sending the aliases and their respective commands
                 sender.sendMessage(toComponent("<#FFA500>EasyAlias Aliases:"));
                 config.getAliases().forEach(a -> {
-                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>\"/" + config.getCommands(a) + "\" <green>(" + (config.getRunAsConsole(a) ? "Console" : "Player") + ")"));
+                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>\"/" + config.getExecutedCommands(a) + "\" <green>(" + (config.getRunAsConsole(a) ? "Console" : "Player") + ")"));
                 });
                 return;
             default:

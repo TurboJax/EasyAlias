@@ -74,7 +74,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         Command bukkitCommand = new Command(alias) {
             @Override
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
-                List<String> commands = config.getCommands(alias);
+                List<String> commands = config.getExecutedCommands(alias);
                 
                 for (String command : commands) {
                     if (command.contains("<player>")) {

@@ -103,8 +103,8 @@ public class MainConfig {
      * @param alias The alias to get the commands for.
      */
     @NotNull
-    public List<String> getCommands(String alias) {
-        String key = "commands." + alias + ".commands";
+    public List<String> getExecutedCommands(String alias) {
+        String key = "commands." + alias + ".executes";
         if (config.isString(key)) {
             return List.of(config.getString(key));
         }
