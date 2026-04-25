@@ -171,9 +171,6 @@ public final class EasyAlias extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
-        config.save();
-
         // Unregistering all commands
         unregisterCommands();
     }

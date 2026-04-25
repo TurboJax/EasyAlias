@@ -67,30 +67,6 @@ public class MainConfig {
     }
 
     /**
-     * Writes the config to the file.
-     * 
-     * @return Whether or not the config was successfully written.
-     */
-    public boolean save() {
-        // Creating the file if it doesn't exist.
-        // If the function returns false, the load function fails too.
-        if (!createFile(false)) {
-            return false;
-        }
-
-        // Saving the config
-        try {
-            config.save(file);
-            plugin.getLogger().info("Successfully saved the config to config.yml");
-            return true;
-        } catch (IOException e) {
-            plugin.getLogger().warning("Could not save to config.yml.  Make sure the user has write permissions.");
-        }
-
-        return false;
-    }
-
-    /**
      * Creating the config file. If it doesn't exist, it loads the default config. If the file does
      * exist, it will only replace it if the parameter is true.
      * 
@@ -117,16 +93,6 @@ public class MainConfig {
         return config.getConfigurationSection("commands").getKeys(false);
     }
 
-    public void addAlias(String alias, String command, boolean runAsConsole) {
-        setCommands(alias, List.of(command));
-        setRunAsConsole(alias, runAsConsole);
-    }
-
-    public void removeAlias(String alias) {
-        config.set("commands." + alias, null);
-        save();
-    }
-
     public List<String> getCommands(String alias) {
         String key = "commands." + alias + ".commands";
         if (config.isString(key)) {
@@ -136,18 +102,8 @@ public class MainConfig {
         return config.getStringList(key);
     }
 
-    public void setCommands(String alias, List<String> commands) {
-        config.set("commands." + alias + ".commands", commands);
-        save();
-    }
-
     public boolean getRunAsConsole(String alias) {
         return config.getBoolean("commands." + alias + ".run_as_console", false);
-    }
-
-    public void setRunAsConsole(String alias, boolean runAsConsole) {
-        config.set("commands." + alias + ".run_as_console", runAsConsole);
-        save();
     }
 
     /**
@@ -157,15 +113,5 @@ public class MainConfig {
      */
     public String getVersion() {
         return config.getString("version");
-    }
-
-    /**
-     * Sets the version number of the config.
-     * 
-     * @param version The new version number.
-     */
-    public void setVersion(String version) {
-        config.set("version", version);
-        save();
     }
 }
