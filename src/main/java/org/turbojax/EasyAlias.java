@@ -8,9 +8,9 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
@@ -30,7 +30,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     private final HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
     private final MainConfig config = new MainConfig(this);
 
-    private final Map<String,Command> enabledCommands = new HashMap<>();
+    private final Map<String,Command> enabledCommands = new ConcurrentHashMap<>();
 
     public EasyAlias() {
         try {
@@ -74,7 +74,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
             public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String @NotNull [] args) {
                 String permission = config.getPermission(alias);
                 if (!permission.isEmpty() && !sender.hasPermission(permission)) {
-                    sender.sendMessage(Component.text("You don't have permission to do that!", NamedTextColor.RED));
+                    sender.sendMessage(Component.text("You don't have permission to do that.", NamedTextColor.RED));
                     return true;
                 }
 
@@ -133,8 +133,8 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         enabledCommands.put(alias, bukkitCommand);
 
         // Updating every player's command list
-        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
-
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.getOnlinePlayers().forEach(Player::updateCommands));
+        
         return true;
     }
 
@@ -168,7 +168,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
         }
 
         // Updating every player's command list
-        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.getOnlinePlayers().forEach(Player::updateCommands));
 
         return true;
     }
