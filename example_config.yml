@@ -1,0 +1,17 @@
+commands:
+  example1:
+    permission: easyalias.example
+    executes:
+      - tellraw @p "hello!"
+      - tellraw @p "this is an example alias!"
+  example2:
+    executes:
+      - tellraw @p "hello!"
+      - tellraw @p "this is another example alias!"
+  example3:
+    run_as_console: true
+    executes:
+      - tellraw @p "hello!"
+      - tellraw @p "this is another example alias!"
+
+version: "1.0.0"
