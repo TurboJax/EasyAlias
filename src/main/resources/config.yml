@@ -1,5 +1,6 @@
 commands:
-  pl: plugins
+  give_role:
+    command: "/lp user <player> parent add role"
+    run_as_console: false
 
-
-version: 1.0.0
+version: "1.0.0"

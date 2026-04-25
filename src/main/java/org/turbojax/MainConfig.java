@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 public class MainConfig {
     public final EasyAlias plugin;
@@ -131,41 +128,35 @@ public class MainConfig {
         return true;
     }
 
-    /**
-     * Gets the safe radius of the player.
-     * 
-     * @return The safe radius of the player.
-     */
-    public Map<String,String> getCommands() {
-        Map<String,String> commands = new HashMap<>();
+    public Set<String> getAliases() {
+        return config.getConfigurationSection("commands").getKeys(false);
+    }
 
-        Set<String> aliases = config.getConfigurationSection("commands").getKeys(false);
-        aliases.forEach(alias -> commands.put(alias, config.getString("commands." + alias)));
+    public void addAlias(String alias, String command, boolean runAsConsole) {
+        setCommand(alias, command);
+        setRunAsConsole(alias, runAsConsole);
+    }
 
-        return commands;
+    public void removeAlias(String alias) {
+        config.set("commands." + alias, null);
+        save();
     }
 
     public String getCommand(String alias) {
-        return getCommands().get(alias);
+        return config.getString("commands." + alias + ".command");
     }
 
-    public void setCommand(@NotNull String alias, @NotNull String command) {
-        Map<String,String> commands = getCommands();
-        commands.put(alias, command);
-        setCommands(commands);
+    public void setCommand(String alias, String command) {
+        config.set("commands." + alias + ".command", command);
+        save();
     }
 
-    public void removeCommand(@NotNull String alias) {
-        Map<String,String> commands = getCommands();
-        commands.remove(alias);
-        setCommands(commands);
+    public boolean getRunAsConsole(String alias) {
+        return config.getBoolean("commands." + alias + ".run_as_console", false);
     }
 
-    public void setCommands(Map<String,String> commands) {
-        config.createSection("commands");
-        commands.forEach((alias, command) -> {
-            config.set("commands." + alias, command);
-        });
+    public void setRunAsConsole(String alias, boolean runAsConsole) {
+        config.set("commands." + alias + ".run_as_console", runAsConsole);
         save();
     }
 
@@ -185,7 +176,6 @@ public class MainConfig {
      */
     public void setVersion(String version) {
         config.set("version", version);
-
         save();
     }
 }
