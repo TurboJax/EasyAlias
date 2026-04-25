@@ -1,7 +1,7 @@
 package org.turbojax;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 public final class EasyAlias extends JavaPlugin implements Listener {
     private final HttpRequest request;
     private final HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
-    private final String GITLAB_TOKEN = "glpat-utSA04EDb8SnhthMS5nakW86MQp1OjcH.01.0w17ewqmt";
     private final MainConfig config = new MainConfig(this);
 
     private final Map<String,Command> enabledCommands = new HashMap<>();
@@ -36,8 +35,7 @@ public final class EasyAlias extends JavaPlugin implements Listener {
     public EasyAlias() {
         try {
             request = HttpRequest.newBuilder()
-                    .uri(new URI("https://gitlab.turbojax.org/api/v4/projects/3/releases")).GET()
-                    .header("PRIVATE-TOKEN", GITLAB_TOKEN)
+                    .uri(new URI("https://api.github.com/repos/turbojax/EasyAlias/releases/latest")).GET()
                     .build();
         } catch (URISyntaxException err) {
             throw new RuntimeException(err);
@@ -188,13 +186,13 @@ public final class EasyAlias extends JavaPlugin implements Listener {
             // Sending the request
             HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            // Parsing the version from the response if there was no error
             if (resp.statusCode() == 200) {
-                JsonArray jsonResp = new Gson().fromJson(resp.body(), JsonArray.class);
+                JsonObject jsonResp = new Gson().fromJson(resp.body(), JsonObject.class);
 
-                return jsonResp.get(0).getAsJsonObject().get("tag_name").getAsString();
+                return jsonResp.get("tag_name").getAsString();
             }
 
-            // Parsing the version from the redirected url.
             return "";
         } catch (IOException | InterruptedException e) {
             // Log smth here
