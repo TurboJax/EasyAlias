@@ -94,6 +94,8 @@ public class MainConfig {
     /** Gets all the aliases defined by the config. */
     @NotNull
     public Set<String> getAliases() {
+        if (!config.isConfigurationSection("commands")) return Set.of();
+        
         return config.getConfigurationSection("commands").getKeys(false);
     }
 
