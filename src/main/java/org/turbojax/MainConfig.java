@@ -2,9 +2,6 @@ package org.turbojax;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -29,28 +26,15 @@ public class MainConfig {
      * @return Whether the configuration was loaded successfully.
      */
     public boolean load() {
-        // Handling config version mismatch if the file exists
-        if (file.exists() && !plugin.getPluginMeta().getVersion().equals(getVersion())) {
-            plugin.getLogger().info(plugin.getPluginMeta().getVersion());
-            plugin.getLogger().info(getVersion());
-            try {
-                // Backing up old configs
-                Files.copy(file.toPath(), Paths.get("plugins/EasyAlias/config.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
-
-                plugin.getLogger().info("Old configs have been backed up.");
-
-                // Loading configs for this version
-                Files.copy(plugin.getResource("config.yml"), Paths.get("plugins/EasyAlias/config.yml.new"), StandardCopyOption.REPLACE_EXISTING);
-
-                plugin.getLogger().info("Configs for this version have been loaded.");
-            } catch (IOException e) {
-                plugin.getLogger().warning("Could not back up the configs.");
-            }
+        // Creating the file if it doesn't exist.
+        if (!file.exists()) {
+            plugin.saveResource(file.getName(), false);
         }
 
-        // Creating the file if it doesn't exist.
-        // If the file fails to be made, the load function fails too.
-        if (!createFile(false)) {
+        // If the file still doesn't exist, fail loading
+        if (!file.exists()) {
+            plugin.getLogger().severe("Could not create config.yml.");
+
             return false;
         }
 
@@ -95,7 +79,7 @@ public class MainConfig {
     @NotNull
     public Set<String> getAliases() {
         if (!config.isConfigurationSection("commands")) return Set.of();
-        
+
         return config.getConfigurationSection("commands").getKeys(false);
     }
 
@@ -143,4 +127,11 @@ public class MainConfig {
     public String getVersion() {
         return config.getString("version");
     }
+
+    /**
+     * This function applies config changes to old configs to allow for old configs to be automatically updated over time.
+     * 
+     * Empty for now because no config changes have been made since 1.0.0 release
+     */
+    public void applyUpdates() {}
 }
