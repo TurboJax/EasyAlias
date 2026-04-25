@@ -6,7 +6,7 @@ api-version: '1.21.11'
 commands:
   easyalias:
     description: "The main command to control the plugin with"
-    usage: "/easyalias <arg> [alias] [command]"
+    usage: "/easyalias <args>"
 
 permissions:
   easyalias.help:
@@ -15,15 +15,9 @@ permissions:
   easyalias.get:
     description: "Allows players to use \"/easyalias get <alias>\""
     default: op
-  easyalias.set:
-    description: "Allows players to use \"/easyalias set <alias> <command>\""
-    default: op
   easyalias.list:
     description: "Allows players to use \"/easyalias list\""
     default: true
   easyalias.reload:
     description: "Allows players to use \"/easyalias reload\""
-    default: op
-  easyalias.remove:
-    description: "Allows players to use \"/easyalias remove <alias>\""
     default: op

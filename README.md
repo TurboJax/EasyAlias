@@ -19,11 +19,7 @@ commands:
 # Commands
 - `/easyalias help`: Prints the help message
 - `/easyalias reload`: Reloads the config and registers/unregisters any commands.
-- `/easyalias add <alias> <run_as_console> <command>`: Adds a new alias to the list.
 - `/easyalias get <alias>`: Prints part of "/easyalias list" for a specific alias
-- `/easyalias edit <alias> command <command>`: Sets the command that the alias executes.
-- `/easyalias edit <alias> run_as_console <run_as_console>`: Sets whether or not the command should run as console.
-- `/easyalias remove <alias>`: Removes an alias from the plugin.
 - `/easyalias list`: Lists all of the commands available to the player and what they do.
 
 
