@@ -10,6 +10,8 @@ import java.util.Set;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class MainConfig {
     public final EasyAlias plugin;
@@ -89,10 +91,18 @@ public class MainConfig {
         return true;
     }
 
+    /** Gets all the aliases defined by the config. */
+    @NotNull
     public Set<String> getAliases() {
         return config.getConfigurationSection("commands").getKeys(false);
     }
 
+    /**
+     * Gets the series of commands an alias executes.
+     * 
+     * @param alias The alias to get the commands for.
+     */
+    @NotNull
     public List<String> getCommands(String alias) {
         String key = "commands." + alias + ".commands";
         if (config.isString(key)) {
@@ -102,8 +112,25 @@ public class MainConfig {
         return config.getStringList(key);
     }
 
+    /**
+     * Gets whether the alias should run as the console or as the player/command block running the alias.
+     * Defaults to false.
+     * 
+     * @param alias The alias to get the executor of.
+     */
     public boolean getRunAsConsole(String alias) {
         return config.getBoolean("commands." + alias + ".run_as_console", false);
+    }
+
+    /**
+     * Gets the permission required to use the alias.
+     * If none is specified, it returns an empty string.
+     * 
+     * @param alias The alias to get the permission of.
+     */
+    @Nullable
+    public String getPermission(String alias) {
+        return config.getString("commands." + alias + ".permission", "");
     }
 
     /**
