@@ -3,7 +3,11 @@ package org.turbojax;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.audience.Audience;
@@ -40,10 +44,16 @@ public class MainCommand implements BasicCommand {
                     return;
                 }
 
+                // Unregistering existing commands
+                plugin.unregisterCommands();
+
                 // Reloading the config
                 if (config.load()) {
-                    // Reloading the commands
+                    // Registering new commands
                     plugin.registerCommands();
+
+                    // Updating the client command maps
+                    Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
 
                     sender.sendMessage(toComponent("<green>Commands reloaded!"));
                 } else {
