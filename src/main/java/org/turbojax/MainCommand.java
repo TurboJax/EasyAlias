@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -63,16 +64,7 @@ public class MainCommand implements BasicCommand {
                     return;
                 }
 
-                String alias = args[1];
-
-                // Handling when the alias isn't bound to a command.
-                if (!config.getAliases().contains(alias)) {
-                    sender.sendMessage(toComponent("<gold>/" + alias + " <red>is not bound to a command."));
-                    return;
-                }
-
-                // Sending the alias and it's respective command
-                sender.sendMessage(toComponent("<gold>/" + alias + "<white>: <yellow>\"/" + config.getExecutedCommands(alias) + "\" <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
+                printAlias(sender, args[1]);
                 return;
             case "list":
                 // Permissions check "easyalias.list"
@@ -83,9 +75,7 @@ public class MainCommand implements BasicCommand {
 
                 // Sending the aliases and their respective commands
                 sender.sendMessage(toComponent("<#FFA500>EasyAlias Aliases:"));
-                config.getAliases().forEach(a -> {
-                    sender.sendMessage(toComponent("<gold>/" + a + "<white>: <yellow>\"/" + config.getExecutedCommands(a) + "\" <green>(" + (config.getRunAsConsole(a) ? "Console" : "Player") + ")"));
-                });
+                config.getAliases().forEach(a -> printAlias(sender, a));
                 return;
             default:
                 // Error: invalid command
@@ -124,6 +114,20 @@ public class MainCommand implements BasicCommand {
 
         // Sending the help message to the sender with only visible components sent.
         sender.sendMessage(toComponent("-----------< <#FFA500>EasyAlias Commands <white>>-----------\n").append(base));
+    }
+
+    public void printAlias(Audience audience, String alias) {
+        // Handling when the alias isn't bound to a command.
+        if (!config.getAliases().contains(alias)) {
+            audience.sendMessage(toComponent("<gold>/" + alias + " <red>is not bound to a command."));
+            return;
+        }
+
+        // Sending the alias and it's respective command
+        audience.sendMessage(toComponent("<gold>/" + alias + "<white>: <green>(" + (config.getRunAsConsole(alias) ? "Console" : "Player") + ")"));
+        config.getExecutedCommands(alias).forEach(cmd -> {
+            audience.sendMessage(toComponent("<gold>- <yellow>\"" + cmd + "\""));
+        });
     }
 
     public Component toComponent(String miniMessageStr) {
