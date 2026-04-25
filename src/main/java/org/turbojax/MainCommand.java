@@ -27,18 +27,6 @@ public class MainCommand implements BasicCommand {
             sendHelp(sender);
             return;
         }
-        /*
-         * /easyalias
-         *  |- help: Prints this help message
-         *  |- reload: Reloads the config and registers/unregisters any commands.
-         *  |- set
-         *  |   \- <alias>
-         *  |       \- <command>: Sets the <alias> to the specified <command>.
-         *  |- get
-         *  |   \- <alias>: Gets the command that the <alias> runs.
-         *  |
-         *  \- list: Lists all of the commands available to the player and what they do.
-         */
 
         switch(args[0].toLowerCase()) {
             case "help":
