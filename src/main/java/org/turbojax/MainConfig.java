@@ -27,32 +27,29 @@ public class MainConfig {
      * @return Whether the configuration was loaded successfully.
      */
     public boolean load() {
-        if (plugin == null) {
-            Bukkit.getLogger().severe("ClearLag plugin not loaded, cannot load config.");
-            return false;
-        }
-
-        // Creating the file if it doesn't exist.
-        // If the function returns false, the load function fails too.
-        if (!createFile(false)) {
-            return false;
-        }
-
-        // Handling config version mismatch
-        if (!plugin.getPluginMeta().getVersion().equals(getVersion())) {
+        // Handling config version mismatch if the file exists
+        if (file.exists() && !plugin.getPluginMeta().getVersion().equals(getVersion())) {
+            plugin.getLogger().info(plugin.getPluginMeta().getVersion());
+            plugin.getLogger().info(getVersion());
             try {
                 // Backing up old configs
-                Files.copy(file.toPath(), Paths.get("plugins/ClearLag/config.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(file.toPath(), Paths.get("plugins/EasyAlias/config.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
 
                 plugin.getLogger().info("Old configs have been backed up.");
 
                 // Loading configs for this version
-                Files.copy(plugin.getResource("config.yml"), Paths.get("plugins/ClearLag/config.yml.new"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(plugin.getResource("config.yml"), Paths.get("plugins/EasyAlias/config.yml.new"), StandardCopyOption.REPLACE_EXISTING);
 
                 plugin.getLogger().info("Configs for this version have been loaded.");
             } catch (IOException e) {
                 plugin.getLogger().warning("Could not back up the configs.");
             }
+        }
+
+        // Creating the file if it doesn't exist.
+        // If the file fails to be made, the load function fails too.
+        if (!createFile(false)) {
+            return false;
         }
 
         // Loading the config
@@ -75,12 +72,6 @@ public class MainConfig {
      * @return Whether or not the config was successfully written.
      */
     public boolean save() {
-        // Getting a plugin instance to use
-        if (plugin == null) {
-            Bukkit.getLogger().severe("ClearLag plugin not loaded, cannot save the config.");
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         // If the function returns false, the load function fails too.
         if (!createFile(false)) {
@@ -107,12 +98,6 @@ public class MainConfig {
      * @return Whether or not the file was created successfully.
      */
     public boolean createFile(boolean replace) {
-        // Getting a plugin instance to use
-        if (plugin == null) {
-            Bukkit.getLogger().severe("ClearLag plugin not loaded, cannot create default config.");
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         if (!file.exists()) {
             plugin.saveResource(file.getName(), replace);
