@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> ## EasyAlias has moved to [Codeberg](https://codeberg.org/TurboJax/EasyAlias)
+
 # Commands
 - `/easyalias help`: Prints the help message
 - `/easyalias reload`: Reloads the config and registers/unregisters any commands.
